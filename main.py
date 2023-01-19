@@ -1,14 +1,17 @@
 from pydrive2.drive import GoogleDrive
 from pydrive2.auth import GoogleAuth
+from datetime import date
 import os
-import time
 
 gauth = GoogleAuth()
-# gauth.LocalWebserverAuth()
 
 # Try to load saved client credentials
 gauth.LoadCredentialsFile("mycreds.txt")
 if gauth.credentials is None:
+    # Fix refresh error by forcing offline
+    gauth.GetFlow()
+    gauth.flow.params.update({'access_type': 'offline'})
+    gauth.flow.params.update({'approval_prompt': 'force'})
     # Authenticate if they're not there
     gauth.LocalWebserverAuth()
 elif gauth.access_token_expired:
@@ -25,12 +28,11 @@ drive = GoogleDrive(gauth)
 path = r"/home/pi/Documents/vods/vid"
 
 for file in os.listdir(path):
-  newFile = drive.CreateFile({'title': file, 'parents': [{'id': '1n1eeqQH4mr1J_gv_-d_cp1sqAj0nYNl_'}]})
+  newFile = drive.CreateFile({'title': f"{date.today()}--wubby", 'parents': [{'id': '1n1eeqQH4mr1J_gv_-d_cp1sqAj0nYNl_'}]})
   newFile.SetContentFile(os.path.join(path, file))
   try: 
     newFile.Upload()
     print(f" {file} has been uploaded to Google Drive")
-    # time.sleep(3600)
     os.remove(os.path.join(path, file))
     print(f" Deleted: {file}")
   except:
