@@ -2,3 +2,7 @@ log.txt
 client_secrets.json
 mycreds.txt
 vid/
+node_modules/
+__pycache__
+auth.json
+runner.sh

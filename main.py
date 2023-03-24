@@ -1,5 +1,6 @@
 from pydrive2.auth import GoogleAuth, ServiceAccountCredentials
 from pydrive2.drive import GoogleDrive
+from subprocess import call
 import os
 import time
 
@@ -33,6 +34,7 @@ for file in os.listdir(path):
   newFile.SetContentFile(os.path.join(path, file))
   print(f'Starting upload of {file}')
   newFile.Upload()
+  call(["node", "notify.js"])
   print(f'{file} has been uploaded to Google Drive as {name}-{i}')
   i+=1
   
